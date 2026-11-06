@@ -12,8 +12,11 @@ test('GET /health debe responder correctamente', async () => {
     expect(response.body.servicio).toBe('usuarios');
 });
 
-test('GET /usuarios debe responder con estado 200 o 500 según conexión DB', async () => {
-    const response = await request(app).get('/usuarios');
-    expect([200, 500]).toContain(response.statusCode);
+test('POST /usuarios debe rechazar solicitudes sin nombre o email', async () => {
+    const response = await request(app)
+        .post('/usuarios')
+        .send({ rol: 'Turista' }); // Enviamos datos incompletos a propósito
+    
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe('Nombre y email son obligatorios');
 });
-
